@@ -115,11 +115,21 @@ alias awsrun='bash /root/awsrun.sh' #show running instances
 alias awsid='aws sts get-caller-identity --query "Account" --output text' #show aws account id
 alias dynamo='aws dynamodb list-tables' #show dynamodb table
 alias mediaconvert='aws mediaconvert describe-endpoints' #show mnediaconvert endpoints
-alias myami='aws ec2 describe-images --owner self --output table' #show my ami in table format
+alias myami="aws ec2 describe-images --executable-users self --query 'Images[*].[Name,ImageId,Description,OwnerId]' --output table " #show my shared ami in table format
 alias start47='aws ec2 start-instances --instance-ids i-0cd0fc82c689de566 i-0b45cc4fdef23a82c i-019959c9a253b0440 i-0b6018a6e02cb3616' #start 4.7 master docker based syste #start 4.7 master docker based system
 alias stop47='aws ec2 stop-instances --instance-ids i-0cd0fc82c689de566 i-0b45cc4fdef23a82c i-019959c9a253b0440 i-0b6018a6e02cb3616' #stop 4.7 master docker based syste #start 4.7 master docker based system
 alias '?'=duck
 alias pbcopy='xclip -selection clipboard'
 alias g='git'
+alias ami="aws ec2 describe-images --executable-users self --query 'Images[*].[Name,ImageId,Description,OwnerId]' --output table"
 ##path 
 export PATH="$HOME:$PATH"
+
+### Bash Prompt GIT Branch and Status Update
+parse_git_branch() {
+      git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+export PS2="\u@\h \[\e[32m\]\w \[\e[91m\]\$(parse_git_branch)\[\e[00m\]$ "
+
+### AWS Command Tab Completion
+complete -C '/usr/local/bin/aws_completer' aws
